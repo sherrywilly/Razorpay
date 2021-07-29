@@ -12,7 +12,6 @@ def send_request(path, auth={}, payload={}, header=None):
         response = requests.post(base_url+path, auth=HTTPBasicAuth(
             auth['username'], auth['password']), data=payload, verify=True, headers=header)
         response = json.loads(response.text)
-        print(response)
     except Exception as e:
         print(e)
         response = {

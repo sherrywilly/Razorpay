@@ -27,13 +27,18 @@ class Order(models.Model):
     created_on = models.DateTimeField(auto_now=True)  
     
 
-class Refunds(models.Model):
-    order = models.OneToOneField(Order,on_delete=models.PROTECT)
-    refund_id = models.CharField(max_length=100)
-   
+
 class Payouts(models.Model):
     p_id = models.CharField(max_length=100)
     amount = models.DecimalField(default=00,decimal_places=2, max_digits=6)
     paid_amount = models.DecimalField(default=00,decimal_places=2, max_digits=6)
     commission = models.DecimalField(default=00,decimal_places=2, max_digits=6)
     user = models.ForeignKey(User,on_delete=models.PROTECT)
+
+class Transaction(models.Model):
+    order = models.ForeignKey(Order,on_delete=models.PROTECT)
+    r_order_id = models.CharField(unique=True,max_length=50)
+    r_pay_id = models.CharField(unique=True,max_length=100)
+    refund_id = models.CharField(max_length=100,blank=True,null=True)
+    hook_signature = models.CharField(max_length=150,blank=True,null=True)
+    response = models.JSONField(blank=True,null=True)

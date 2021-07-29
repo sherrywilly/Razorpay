@@ -16,5 +16,6 @@ urlpatterns = [
 
 
     #####################!--------------  HOOK URLS ----------------##########################
-    path('hooks/verify/',VerifyPayHook.as_view())
+    path('hooks/verify/',VerifyPayHook.as_view()),
+    # path('hooks/verify/refund/',VerifyRefundHook.as_view())
 ]

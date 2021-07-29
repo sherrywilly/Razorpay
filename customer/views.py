@@ -8,14 +8,14 @@ from os import path
 from django.http.response import Http404, JsonResponse
 from django.shortcuts import render
 from django.contrib.sites.shortcuts import get_current_site
-from .models import Order, Payouts, Refunds, User
+from .models import Order, Payouts, User
 from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 import razorpay
 import random
 
-rname = "rzp_test_jYvNsa4FusIMK5"
-rpass = "s6Vo8mE40GB2ZZlZmgNTlDwE"
+rname = "rzp_test_hkwOy4WY561PNE"
+rpass = "FXQuLiC61TGFr9Tls3yGJC70"
 
 
 def index(request):
@@ -39,14 +39,14 @@ def payment(request):
         order.amount = int(amount)
         order.save()
         rpay_order = client.order.create(
-            {'amount': amount*100, 'currency': "INR", 'receipt': str(order.order_id), 'payment_capture': 0})
+            {'amount': amount*100, 'currency': "INR", 'receipt': str(order.order_id), 'payment_capture': 1})
         order.razorpay_order_id = rpay_order.get('id')
         order.save()
         context = {
             'order': order,
             'order_id': rpay_order['id'],
             'orderId': order.order_id,
-            'final_price': amount, 'razorpay_merchant_id': 'rzp_test_jYvNsa4FusIMK5',
+            'final_price': amount, 'razorpay_merchant_id': 'rzp_test_hkwOy4WY561PNE',
             'callback_url': callback_url
         }
         print(context)
@@ -73,8 +73,10 @@ def verifyPayment(request):
         order.save()
         result = client.utility.verify_payment_signature(params_dict)
         if result == None:
-            order.payment_status = 'success'
-            order.save()
+        
+        
+            # client.payment.capture(payment_id, int(order.amount)*100)
+            
             return JsonResponse({'status': 'payment completed successfully'})
         order = Order.objects.get(
             razorpay_order_id=request.POST.get('razorpay_order_id'))
@@ -93,17 +95,14 @@ def completed(request):
     }
 
     return render(request,'payments/completed.html',context)
-    
+
 def refund(request,payid):
 
     if request.method=='POST':
         amount = float(request.POST.get('amount',0))
         amount = int((amount*100))
         print('amount',amount)
-        try:
-            client.payment.capture(payid, amount)
-        except:
-            pass
+       
         try:
             
         
@@ -111,7 +110,7 @@ def refund(request,payid):
             x = client.payment.refund(payid, amount)
             order.payment_status = 'refunded'
             order.save()
-            Refunds.objects.create(order_id =order.pk,refund_id = x['id'] )
+            # Refunds.objects.create(order_id =order.pk,refund_id = x['id'] )
 
         except Exception as e:
             return JsonResponse({'error': True, 'message': str(e)})
@@ -198,7 +197,7 @@ def create_payout(request, id):
     if request.method == "POST":
         amount = int(request.POST.get('amount', 0))
         comm = float(request.POST.get('comm', 0))/100
-        print(comm)
+      
         # amount = int(sum([i.amount for i in Order.objects.filter(to_user_id=id)]))
         total = amount-(amount*comm)
         payloa = json.dumps(
@@ -214,6 +213,7 @@ def create_payout(request, id):
         )
         x = send_request(path='payouts', auth={
             'username': rname, 'password': rpass}, payload=payloa)
+        
         try:
             Payouts.objects.create(p_id=x['id'], amount=amount, paid_amount=total, commission=(
                 amount*comm), user_id=_user.pk)

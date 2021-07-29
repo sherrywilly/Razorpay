@@ -1,0 +1,66 @@
+{
+  "entity": "event",
+  "account_id": "acc_C22WOuBW79sh0n",
+  "event": "refund.processed",
+  "contains": [
+    "refund",
+    "payment"
+  ],
+  "payload": {
+    "refund": {
+      "entity": {
+        "id": "rfnd_Heax5rxucwf2aS",
+        "entity": "refund",
+        "amount": 4000,
+        "currency": "INR",
+        "payment_id": "pay_HeGCvvjQIAjsvZ",
+        "notes": [],
+        "receipt": null,
+        "acquirer_data": {
+          "arn": null
+        },
+        "created_at": 1627528610,
+        "batch_id": null,
+        "status": "processed",
+        "speed_processed": "normal",
+        "speed_requested": "normal"
+      }
+    },
+    "payment": {
+      "entity": {
+        "id": "pay_HeGCvvjQIAjsvZ",
+        "entity": "payment",
+        "amount": 4000,
+        "currency": "INR",
+        "status": "refunded",
+        "order_id": "order_HeGCnjDGqpe5oW",
+        "invoice_id": null,
+        "international": true,
+        "method": "card",
+        "amount_refunded": 4000,
+        "refund_status": "full",
+        "captured": true,
+        "description": "Test Transaction",
+        "card_id": "card_HeGCw1kSC0qRPJ",
+        "bank": null,
+        "wallet": null,
+        "vpa": null,
+        "email": "sherrywilson9999@gmail.com",
+        "contact": "+919656007742",
+        "notes": [],
+        "fee": 120,
+        "tax": 0,
+        "error_code": null,
+        "error_description": null,
+        "error_source": null,
+        "error_step": null,
+        "error_reason": null,
+        "acquirer_data": {
+          "auth_code": "932066"
+        },
+        "created_at": 1627455556
+      }
+    }
+  },
+  "created_at": 1627528610
+}
